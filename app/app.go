@@ -1,13 +1,27 @@
 package main
 
-import "github.com/gin-gonic/gin"
+import(
+    "github.com/gin-gonic/gin"
+    "./model"
+    //"net/http"
+)
 
 func main() {
-    r := gin.Default()
-    r.GET("/", func(c *gin.Context) {
-        c.JSON(200, gin.H{
-            "message": "pong",
-        })
+	r := gin.Default()
+	r.GET("/ping", helloWorld)
+    r.POST("/post", uploadMessage)
+	r.Run()
+}
+
+func helloWorld(c *gin.Context) {
+    c.JSON(200, gin.H{
+        "message": "helloworld",
     })
-    r.Run(":80") // listen and serve on 0.0.0.0:8080
+}
+
+func uploadMessage(c *gin.Context) {
+    var req model.MessageModel
+    c.BindJSON(&req)
+    mess := model.MessageModel{Message: req.Message, Title: req.Title}
+    c.JSON(200, mess)
 }

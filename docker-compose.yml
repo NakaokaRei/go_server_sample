@@ -6,6 +6,6 @@ services:
       dockerfile: Dockerfile
     privileged: true
     ports:
-      - "80:80"
+      - "8080:8080"
     volumes:
       - ./app:/go/app
