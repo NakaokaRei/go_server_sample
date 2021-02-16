@@ -14,22 +14,12 @@ func main() {
     dbInit()
     dbInsert("sample", "stats")
     
-	r.GET("/ping", helloWorld)
-    r.POST("/post", uploadMessage)
+	r.GET("/helloworld", helloWorld)
+    r.POST("/message", uploadMessage)
+    r.POST("/before", breforeResponse)
+    r.POST("/log", logResponse)
+    r.POST("/after", afterResponse)
 	r.Run()
-}
-
-func helloWorld(c *gin.Context) {
-    c.JSON(200, gin.H{
-        "message": "helloworld",
-    })
-}
-
-func uploadMessage(c *gin.Context) {
-    var req model.MessageModel
-    c.BindJSON(&req)
-    mess := model.MessageModel{Message: req.Message, Title: req.Title}
-    c.JSON(200, mess)
 }
 
 //DB初期化
@@ -51,4 +41,34 @@ func dbInsert(text string, status string) {
     }
     db.Create(&model.BeforeModel{Text: text, Status: status})
     defer db.Close()
+}
+
+//getメゾットのチュートリアル
+func helloWorld(c *gin.Context) {
+    c.JSON(200, gin.H{
+        "message": "helloworld",
+    })
+}
+
+//postメゾットのチュートリアル
+func uploadMessage(c *gin.Context) {
+    var req model.MessageModel
+    c.BindJSON(&req)
+    mess := model.MessageModel{Message: req.Message, Title: req.Title}
+    c.JSON(200, mess)
+}
+
+// 一個目のAPI
+func breforeResponse(c *gin.Context) {
+    var req model.BeforeRequest
+    c.BindJSON(&req)
+    c.JSON(200, req)
+}
+
+// 二個目のAPI
+func logResponse(c *gin.Context) {
+}
+
+// 三個目のAPI
+func afterResponse(c *gin.Context) {
 }
