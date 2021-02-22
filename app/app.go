@@ -3,6 +3,7 @@ package main
 import(
     "github.com/gin-gonic/gin"
     "github.com/jinzhu/gorm"
+    _ "github.com/google/uuid"
     "./model"
     _ "github.com/mattn/go-sqlite3"
     //"net/http"
@@ -12,7 +13,6 @@ func main() {
 	r := gin.Default()
 
     dbInit()
-    dbInsert("sample", "stats")
     
 	r.GET("/helloworld", helloWorld)
     r.POST("/message", uploadMessage)
@@ -28,8 +28,11 @@ func dbInit() {
     if err != nil {
         panic("データベース開けず！（dbInit）")
     }
-    db.AutoMigrate(&model.BeforeModel{})
-    db.AutoMigrate(&model.LogModel{})
+    db.AutoMigrate(&model.BeforeTable{})
+    db.AutoMigrate(&model.FoodTable{})
+    db.AutoMigrate(&model.LogTable{})
+    db.AutoMigrate(&model.LogsTable{})
+    db.AutoMigrate(&model.AfterTable{})
     defer db.Close()
 }
 
@@ -39,7 +42,7 @@ func dbInsert(text string, status string) {
     if err != nil {
         panic("データベース開けず！（dbInsert)")
     }
-    db.Create(&model.BeforeModel{Text: text, Status: status})
+    db.Create(&model.FoodTable{Session_id: text, Food_name: status})
     defer db.Close()
 }
 
@@ -67,8 +70,14 @@ func breforeResponse(c *gin.Context) {
 
 // 二個目のAPI
 func logResponse(c *gin.Context) {
+    var req model.LogRequest
+    c.BindJSON(&req)
+    c.JSON(200, req)
 }
 
 // 三個目のAPI
 func afterResponse(c *gin.Context) {
+    var req model.AfterRequest
+    c.BindJSON(&req)
+    c.JSON(200, req)
 }
